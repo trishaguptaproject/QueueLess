@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>QueueLess - QR Code</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f1f8f5;
+            color: #173b35;
+            min-height: 100vh;
+        }
+
+        header {
+            background: white;
+            padding: 18px 40px;
+            border-bottom: 1px solid #dceae5;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+            color: #16806f;
+        }
+
+        .back {
+            text-decoration: none;
+            color: #16806f;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 18px;
+            padding: 35px;
+            text-align: center;
+
+            border: 1px solid #dceae5;
+
+            box-shadow:
+                0 8px 25px rgba(0,0,0,0.06);
+        }
+
+        h1 {
+            margin-bottom: 10px;
+            font-size: 30px;
+        }
+
+        .subtitle {
+            color: #6b7e79;
+            margin-bottom: 30px;
+        }
+
+        .service {
+            font-size: 23px;
+            font-weight: bold;
+            color: #16806f;
+            margin-bottom: 25px;
+        }
+
+        #qrcode {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            margin: 20px auto 25px;
+        }
+
+        #qrcode img {
+            border: 10px solid white;
+        }
+
+        .scan-text {
+            color: #536863;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .url-box {
+            background: #f1f8f5;
+            padding: 12px;
+            border-radius: 8px;
+
+            font-size: 13px;
+            color: #4e655f;
+
+            word-break: break-all;
+        }
+
+        .print-btn {
+            margin-top: 25px;
+            border: none;
+            background: #16806f;
+            color: white;
+
+            padding: 12px 25px;
+            border-radius: 9px;
+
+            font-size: 15px;
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+        .print-btn:hover {
+            opacity: 0.9;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<header>
+
+    <div class="logo">
+        QueueLess
+    </div>
+
+    <a href="admin.html"
+       class="back">
+        ← Back to Admin
+    </a>
+
+</header>
+
+
+<div class="container">
+
+    <div class="card">
+
+        <h1>Scan to Track Queue</h1>
+
+        <div class="subtitle">
+            Scan this QR code to view the queue
+        </div>
+
+
+        <div class="service">
+            Accounts Office
+        </div>
+
+
+        <div id="qrcode"></div>
+
+
+        <div class="scan-text">
+
+            Students can scan this QR code
+            using their phone camera to open
+            the QueueLess queue tracking page.
+
+        </div>
+
+
+        <div class="url-box">
+            http://localhost:8087/QueueLess/track.html
+        </div>
+
+
+        <button
+            class="print-btn"
+            onclick="window.print()">
+
+            Print QR Code
+
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- QR Code Library -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js">
+</script>
+
+
+<script>
+
+    new QRCode(
+        document.getElementById("qrcode"),
+        {
+            text:
+                "http://localhost:8087/QueueLess/track.html",
+
+            width: 220,
+
+            height: 220,
+
+            colorDark: "#173b35",
+
+            colorLight: "#ffffff",
+
+            correctLevel:
+                QRCode.CorrectLevel.H
+        }
+    );
+
+</script>
+
+
+</body>
+
+</html>
