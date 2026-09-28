@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>QueueLess - Counters</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f1f8f5;
+            color: #173b35;
+            min-height: 100vh;
+        }
+
+        header {
+            background: white;
+            padding: 18px 40px;
+            border-bottom: 1px solid #dceae5;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+            color: #16806f;
+        }
+
+        .back {
+            text-decoration: none;
+            color: #16806f;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .heading {
+            margin-bottom: 25px;
+        }
+
+        .heading h1 {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .heading p {
+            color: #60756f;
+        }
+
+        .counters {
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fit, minmax(280px, 1fr));
+
+            gap: 22px;
+        }
+
+        .counter-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+
+            border: 1px solid #dceae5;
+
+            box-shadow:
+                0 5px 18px rgba(0,0,0,0.05);
+        }
+
+        .counter-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            margin-bottom: 22px;
+        }
+
+        .counter-name {
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .active {
+            background: #dff5eb;
+            color: #16806f;
+        }
+
+        .inactive {
+            background: #fce4e4;
+            color: #c0392b;
+        }
+
+        .token-label {
+            font-size: 13px;
+            color: #71847f;
+            margin-bottom: 6px;
+        }
+
+        .token {
+            font-size: 38px;
+            font-weight: bold;
+            color: #16806f;
+            margin-bottom: 20px;
+        }
+
+        .empty-token {
+            color: #a3b2ae;
+        }
+
+        button {
+            width: 100%;
+            border: none;
+            border-radius: 10px;
+            padding: 12px;
+
+            font-size: 14px;
+            font-weight: bold;
+
+            cursor: pointer;
+            margin-top: 9px;
+        }
+
+        .assign-btn {
+            background: #16806f;
+            color: white;
+        }
+
+        .start-btn {
+            background: #e8f4f0;
+            color: #16806f;
+        }
+
+        .complete-btn {
+            background: #173b35;
+            color: white;
+        }
+
+        .toggle-btn {
+            background: #f2f4f3;
+            color: #173b35;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        button:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+        }
+
+        .message {
+            background: white;
+            border: 1px solid #dceae5;
+            border-radius: 10px;
+
+            padding: 14px;
+            margin-bottom: 20px;
+
+            display: none;
+        }
+
+        .info {
+            background: #e8f4f0;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 30px;
+            color: #286057;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<header>
+
+    <div class="logo">
+        QueueLess
+    </div>
+
+    <a href="admin.html" class="back">
+        ← Back to Admin
+    </a>
+
+</header>
+
+
+<div class="container">
+
+    <div class="heading">
+
+        <h1>Counter Management</h1>
+
+        <p>
+            Accounts Office — Manage service counters
+        </p>
+
+    </div>
+
+
+    <div id="message"
+         class="message">
+    </div>
+
+
+    <div id="counters"
+         class="counters">
+
+        <p>Loading counters...</p>
+
+    </div>
+
+
+    <div class="info">
+
+        <strong>How counters work:</strong>
+
+        <br><br>
+
+        A called queue token can be assigned to an
+        active counter. The counter can then start
+        serving the student and complete the token.
+
+    </div>
+
+</div>
+
+
+<script>
+
+    async function loadCounters() {
+
+        try {
+
+            const response =
+                await fetch("CounterServlet");
+
+            const data =
+                await response.json();
+
+            const container =
+                document.getElementById("counters");
+
+            container.innerHTML = "";
+
+            if (data.length === 0) {
+
+                container.innerHTML =
+                    "<p>No counters found.</p>";
+
+                return;
+            }
+
+
+            data.forEach(counter => {
+
+                const card =
+                    document.createElement("div");
+
+                card.className =
+                    "counter-card";
+
+
+                const active =
+                    counter.status === "ACTIVE";
+
+
+                const token =
+                    counter.currentToken;
+
+
+                card.innerHTML = `
+
+                    <div class="counter-top">
+
+                        <div class="counter-name">
+                            ${counter.counterName}
+                        </div>
+
+                        <div class="status
+                            ${active ? "active" : "inactive"}">
+
+                            ${counter.status}
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="token-label">
+                        CURRENT TOKEN
+                    </div>
+
+
+                    <div class="token
+                        ${token ? "" : "empty-token"}">
+
+                        ${token || "No Token"}
+
+                    </div>
+
+
+                    <button
+                        class="assign-btn"
+                        onclick="assignToken(${counter.id})"
+                        ${!active || token ? "disabled" : ""}>
+
+                        Assign Called Token
+
+                    </button>
+
+
+                    <button
+                        class="start-btn"
+                        onclick="startServing(${counter.id})"
+                        ${!token ? "disabled" : ""}>
+
+                        Start Serving
+
+                    </button>
+
+
+                    <button
+                        class="complete-btn"
+                        onclick="completeToken(${counter.id})"
+                        ${!token ? "disabled" : ""}>
+
+                        Complete Token
+
+                    </button>
+
+
+                    <button
+                        class="toggle-btn"
+                        onclick="toggleCounter(${counter.id})">
+
+                        ${active
+                            ? "Make Counter Inactive"
+                            : "Activate Counter"}
+
+                    </button>
+
+                `;
+
+
+                container.appendChild(card);
+
+            });
+
+        } catch (error) {
+
+            showMessage(
+                "Unable to load counters."
+            );
+
+        }
+
+    }
+
+
+    async function assignToken(counterId) {
+
+        const token =
+            prompt(
+                "Enter the CALLED token number:\nExample: A002"
+            );
+
+
+        if (!token) {
+            return;
+        }
+
+
+        const form =
+            new URLSearchParams();
+
+        form.append("action", "ASSIGN");
+        form.append("counterId", counterId);
+        form.append("token", token.trim().toUpperCase());
+
+
+        const response =
+            await fetch("CounterServlet", {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type":
+                        "application/x-www-form-urlencoded"
+                },
+
+                body: form
+
+            });
+
+
+        const data =
+            await response.json();
+
+
+        showMessage(data.message);
+
+        loadCounters();
+
+    }
+
+
+    async function startServing(counterId) {
+
+        const form =
+            new URLSearchParams();
+
+        form.append(
+            "action",
+            "START_SERVING"
+        );
+
+        form.append(
+            "counterId",
+            counterId
+        );
+
+
+        const response =
+            await fetch("CounterServlet", {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type":
+                        "application/x-www-form-urlencoded"
+                },
+
+                body: form
+
+            });
+
+
+        const data =
+            await response.json();
+
+
+        showMessage(data.message);
+
+        loadCounters();
+
+    }
+
+
+    async function completeToken(counterId) {
+
+        const confirmComplete =
+            confirm(
+                "Are you sure you want to complete this token?"
+            );
+
+
+        if (!confirmComplete) {
+            return;
+        }
+
+
+        const form =
+            new URLSearchParams();
+
+        form.append(
+            "action",
+            "COMPLETE"
+        );
+
+        form.append(
+            "counterId",
+            counterId
+        );
+
+
+        const response =
+            await fetch("CounterServlet", {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type":
+                        "application/x-www-form-urlencoded"
+                },
+
+                body: form
+
+            });
+
+
+        const data =
+            await response.json();
+
+
+        showMessage(data.message);
+
+        loadCounters();
+
+    }
+
+
+    async function toggleCounter(counterId) {
+
+        const form =
+            new URLSearchParams();
+
+        form.append(
+            "action",
+            "TOGGLE"
+        );
+
+        form.append(
+            "counterId",
+            counterId
+        );
+
+
+        const response =
+            await fetch("CounterServlet", {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type":
+                        "application/x-www-form-urlencoded"
+                },
+
+                body: form
+
+            });
+
+
+        const data =
+            await response.json();
+
+
+        showMessage(data.message);
+
+        loadCounters();
+
+    }
+
+
+    function showMessage(message) {
+
+        const box =
+            document.getElementById("message");
+
+        box.innerText = message;
+
+        box.style.display = "block";
+
+
+        setTimeout(() => {
+
+            box.style.display = "none";
+
+        }, 3000);
+
+    }
+
+
+    loadCounters();
+
+
+    setInterval(
+        loadCounters,
+        5000
+    );
+
+</script>
+
+</body>
+</html>

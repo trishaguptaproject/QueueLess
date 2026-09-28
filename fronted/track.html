@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Track Queue - QueueLess</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f1f8f5;
+            color: #17352f;
+        }
+
+        header {
+            background: white;
+            padding: 18px 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #dcebe6;
+        }
+
+        .logo {
+            font-size: 26px;
+            font-weight: bold;
+            color: #16806f;
+        }
+
+        .back-link {
+            color: #16806f;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 700px;
+            margin: 50px auto;
+        }
+
+        .card {
+            background: white;
+            padding: 35px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.07);
+        }
+
+        h1 {
+            margin-bottom: 10px;
+        }
+
+        .description {
+            color: #60756f;
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #cddbd6;
+            border-radius: 8px;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: #16806f;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #116b5d;
+        }
+
+        #result {
+            margin-top: 25px;
+        }
+
+        .result-card {
+            background: #f6faf8;
+            padding: 25px;
+            border-radius: 12px;
+        }
+
+        .token {
+            font-size: 48px;
+            font-weight: bold;
+            color: #16806f;
+            text-align: center;
+            margin: 15px 0;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #dcebe6;
+        }
+
+        .result-row:last-child {
+            border-bottom: none;
+        }
+
+        .error {
+            color: #b42318;
+            background: #fff1f0;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <header>
+
+        <div class="logo">
+            QueueLess
+        </div>
+
+        <a href="index.html"
+           class="back-link">
+            ← Back to Home
+        </a>
+
+    </header>
+
+
+    <main class="container">
+
+        <div class="card">
+
+            <h1>
+                Track Your Queue
+            </h1>
+
+            <p class="description">
+                Enter your queue token to check your
+                current position.
+            </p>
+
+
+            <label for="token">
+                Queue Token
+            </label>
+
+            <input
+                type="text"
+                id="token"
+                placeholder="Example: A001"
+            >
+
+
+            <button onclick="trackQueue()">
+                Track Queue
+            </button>
+
+
+            <div id="result"></div>
+
+        </div>
+
+    </main>
+
+
+    <script>
+
+        function trackQueue() {
+
+            const token =
+                document.getElementById("token")
+                .value
+                .trim()
+                .toUpperCase();
+
+            const result =
+                document.getElementById("result");
+
+
+            if (token === "") {
+
+                result.innerHTML =
+                    "<div class='error'>"
+                    + "Please enter your token number."
+                    + "</div>";
+
+                return;
+            }
+
+
+            result.innerHTML =
+                "<p>Loading...</p>";
+
+
+            fetch(
+                "QueueTrackServlet?token="
+                + encodeURIComponent(token)
+            )
+
+            .then(response => response.json())
+
+            .then(data => {
+
+                if (data.error) {
+
+                    result.innerHTML =
+                        "<div class='error'>"
+                        + data.error
+                        + "</div>";
+
+                    return;
+                }
+
+
+                result.innerHTML =
+
+                    "<div class='result-card'>"
+
+                    + "<h2>"
+                    + data.studentName
+                    + "</h2>"
+
+                    + "<p>"
+                    + data.serviceName
+                    + "</p>"
+
+                    + "<div class='token'>"
+                    + data.token
+                    + "</div>"
+
+                    + "<div class='result-row'>"
+                    + "<span>Status</span>"
+                    + "<strong>"
+                    + data.status
+                    + "</strong>"
+                    + "</div>"
+
+                    + "<div class='result-row'>"
+                    + "<span>People Ahead</span>"
+                    + "<strong>"
+                    + data.peopleAhead
+                    + "</strong>"
+                    + "</div>"
+
+                    + "<div class='result-row'>"
+                    + "<span>Estimated Wait</span>"
+                    + "<strong>"
+                    + data.estimatedWait
+                    + " minutes"
+                    + "</strong>"
+                    + "</div>"
+
+                    + "</div>";
+
+            })
+
+            .catch(error => {
+
+                console.error(error);
+
+                result.innerHTML =
+                    "<div class='error'>"
+                    + "Unable to connect to the server."
+                    + "</div>";
+
+            });
+        }
+
+    </script>
+
+</body>
+
+</html>

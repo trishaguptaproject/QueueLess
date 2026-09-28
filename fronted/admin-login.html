@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>QueueLess - Admin Dashboard</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f1f8f5;
+            color: #183b36;
+        }
+
+        /* HEADER */
+
+        header {
+            background: white;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 35px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+            color: #16806f;
+        }
+
+        .admin-label {
+            font-size: 14px;
+            color: #657873;
+        }
+
+        .logout {
+            margin-left: 20px;
+            padding: 9px 16px;
+            border: none;
+            border-radius: 7px;
+            background: #e85d5d;
+            color: white;
+            cursor: pointer;
+        }
+
+        .logout:hover {
+            background: #d84b4b;
+        }
+
+        /* MAIN */
+
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        h1 {
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            color: #657873;
+            margin-top: 0;
+            margin-bottom: 25px;
+        }
+
+        /* STAT CARDS */
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 22px;
+            border-radius: 14px;
+            box-shadow: 0 5px 18px rgba(0,0,0,0.06);
+        }
+
+        .stat-title {
+            color: #657873;
+            font-size: 14px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            margin-top: 8px;
+            color: #16806f;
+        }
+
+        /* QUEUE CARD */
+
+        .queue-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 5px 18px rgba(0,0,0,0.06);
+        }
+
+        .queue-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .queue-header h2 {
+            margin: 0;
+        }
+
+        .service {
+            color: #657873;
+        }
+
+        /* CURRENT TOKEN */
+
+        .current-box {
+            background: #f1f8f5;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .current-label {
+            color: #657873;
+            font-size: 14px;
+        }
+
+        .current-token {
+            font-size: 48px;
+            font-weight: bold;
+            color: #16806f;
+            margin: 10px 0;
+        }
+
+        .student-name {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .status {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 7px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .status-WAITING {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-CALLED {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .status-SERVING {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-COMPLETED {
+            background: #e2e3e5;
+            color: #383d41;
+        }
+
+        /* BUTTONS */
+
+        .actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        button.action {
+            border: none;
+            padding: 13px 22px;
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .call {
+            background: #16806f;
+        }
+
+        .serve {
+            background: #3578e5;
+        }
+
+        .complete {
+            background: #4caf50;
+        }
+
+        button.action:hover {
+            opacity: 0.88;
+        }
+
+        /* TABLE */
+
+        .table-container {
+            margin-top: 25px;
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 5px 18px rgba(0,0,0,0.06);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            background: #f1f8f5;
+            padding: 13px;
+        }
+
+        td {
+            padding: 13px;
+            border-bottom: 1px solid #edf1ef;
+        }
+
+        .message {
+            margin-top: 18px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        @media(max-width:800px) {
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .queue-header {
+                display: block;
+            }
+        }
+
+        @media(max-width:500px) {
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            header {
+                padding: 0 15px;
+            }
+
+            .container {
+                padding: 0 12px;
+            }
+
+            .actions {
+                display: block;
+            }
+
+            button.action {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+<header>
+
+    <div class="logo">
+        QueueLess
+    </div>
+
+    <div>
+        <span class="admin-label">
+            Administrator
+        </span>
+
+        <button class="logout" onclick="logout()">
+            Logout
+        </button>
+    </div>
+
+</header>
+
+
+<div class="container">
+
+    <h1>Admin Dashboard</h1>
+
+    <p class="subtitle">
+        Manage the Accounts Office virtual queue
+    </p>
+
+
+    <!-- STATISTICS -->
+
+    <div class="stats">
+
+        <div class="stat-card">
+            <div class="stat-title">
+                Total Queue
+            </div>
+
+            <div class="stat-value" id="totalQueue">
+                0
+            </div>
+        </div>
+
+
+        <div class="stat-card">
+            <div class="stat-title">
+                Waiting
+            </div>
+
+            <div class="stat-value" id="waitingCount">
+                0
+            </div>
+        </div>
+
+
+        <div class="stat-card">
+            <div class="stat-title">
+                Called
+            </div>
+
+            <div class="stat-value" id="calledCount">
+                0
+            </div>
+        </div>
+
+
+        <div class="stat-card">
+            <div class="stat-title">
+                Serving
+            </div>
+
+            <div class="stat-value" id="servingCount">
+                0
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- CURRENT QUEUE -->
+
+    <div class="queue-card">
+
+        <div class="queue-header">
+
+            <div>
+                <h2>Accounts Office</h2>
+
+                <div class="service">
+                    Queue Management
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="current-box">
+
+            <div class="current-label">
+                CURRENT QUEUE TOKEN
+            </div>
+
+            <div class="current-token" id="currentToken">
+                —
+            </div>
+
+            <div class="student-name" id="currentStudent">
+                No active token
+            </div>
+
+            <div id="currentStatus"></div>
+
+        </div>
+
+
+        <!-- ACTION BUTTONS -->
+
+        <div class="actions">
+
+            <button
+                class="action call"
+                onclick="performAction('CALL_NEXT')">
+
+                CALL NEXT
+
+            </button>
+
+
+            <button
+                class="action serve"
+                onclick="performAction('START_SERVING')">
+
+                START SERVING
+
+            </button>
+
+
+            <button
+                class="action complete"
+                onclick="performAction('COMPLETE')">
+
+                COMPLETE
+
+            </button>
+
+        </div>
+
+
+        <div class="message" id="message"></div>
+
+    </div>
+
+
+    <!-- QUEUE TABLE -->
+
+    <div class="table-container">
+
+        <h2>Queue Records</h2>
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>ID</th>
+                    <th>Student</th>
+                    <th>Service</th>
+                    <th>Token</th>
+                    <th>Status</th>
+                    <th>Joined At</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="queueTable">
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+<script>
+
+let queueData = [];
+
+
+/* LOAD QUEUE */
+
+function loadQueue() {
+
+    fetch("AdminQueueServlet")
+        .then(response => response.json())
+        .then(data => {
+
+            queueData = data;
+
+            updateDashboard(data);
+
+        })
+        .catch(error => {
+
+            console.error(error);
+
+            document.getElementById("message").innerHTML =
+                "Unable to load queue.";
+
+        });
+}
+
+
+/* UPDATE DASHBOARD */
+
+function updateDashboard(data) {
+
+    document.getElementById("totalQueue").innerText =
+        data.length;
+
+
+    const waiting =
+        data.filter(item => item.status === "WAITING").length;
+
+    const called =
+        data.filter(item => item.status === "CALLED").length;
+
+    const serving =
+        data.filter(item => item.status === "SERVING").length;
+
+
+    document.getElementById("waitingCount").innerText =
+        waiting;
+
+    document.getElementById("calledCount").innerText =
+        called;
+
+    document.getElementById("servingCount").innerText =
+        serving;
+
+
+    /* FIND ACTIVE TOKEN */
+
+    let activeToken = null;
+
+
+    for (let i = 0; i < data.length; i++) {
+
+        if (
+            data[i].status === "SERVING" ||
+            data[i].status === "CALLED"
+        ) {
+
+            activeToken = data[i];
+
+            break;
+        }
+    }
+
+
+    if (!activeToken) {
+
+        for (let i = 0; i < data.length; i++) {
+
+            if (data[i].status === "WAITING") {
+
+                activeToken = data[i];
+
+                break;
+            }
+        }
+    }
+
+
+    if (activeToken) {
+
+        document.getElementById("currentToken").innerText =
+            activeToken.token;
+
+        document.getElementById("currentStudent").innerText =
+            activeToken.student;
+
+
+        document.getElementById("currentStatus").innerHTML =
+            '<span class="status status-' +
+            activeToken.status +
+            '">' +
+            activeToken.status +
+            '</span>';
+
+    } else {
+
+        document.getElementById("currentToken").innerText =
+            "—";
+
+        document.getElementById("currentStudent").innerText =
+            "No active token";
+
+        document.getElementById("currentStatus").innerHTML =
+            "";
+
+    }
+
+
+    /* TABLE */
+
+    const table =
+        document.getElementById("queueTable");
+
+    table.innerHTML = "";
+
+
+    data.forEach(item => {
+
+        const row = document.createElement("tr");
+
+        row.innerHTML =
+
+            "<td>" + item.id + "</td>" +
+
+            "<td>" + item.student + "</td>" +
+
+            "<td>" + item.service + "</td>" +
+
+            "<td><strong>" +
+            item.token +
+            "</strong></td>" +
+
+            "<td>" +
+            '<span class="status status-' +
+            item.status +
+            '">' +
+            item.status +
+            "</span>" +
+            "</td>" +
+
+            "<td>" +
+            item.joinedAt +
+            "</td>";
+
+
+        table.appendChild(row);
+
+    });
+
+}
+
+
+/* ADMIN ACTION */
+
+function performAction(action) {
+
+    const message =
+        document.getElementById("message");
+
+
+    message.style.color = "#16806f";
+
+    message.innerText =
+        "Processing...";
+
+
+    fetch("AdminQueueServlet", {
+
+        method: "POST",
+
+        headers: {
+            "Content-Type":
+                "application/x-www-form-urlencoded"
+        },
+
+        body:
+            "action=" +
+            encodeURIComponent(action)
+
+    })
+
+    .then(response => response.json())
+
+    .then(data => {
+
+        if (data.success) {
+
+            message.style.color = "#16806f";
+
+            message.innerText =
+                data.message;
+
+            loadQueue();
+
+        } else {
+
+            message.style.color = "#d9534f";
+
+            message.innerText =
+                data.message;
+
+        }
+
+    })
+
+    .catch(error => {
+
+        console.error(error);
+
+        message.style.color = "#d9534f";
+
+        message.innerText =
+            "Server error.";
+
+    });
+
+}
+
+
+/* LOGOUT */
+
+function logout() {
+
+    window.location.href = "login.html";
+
+}
+
+
+/* INITIAL LOAD */
+
+loadQueue();
+
+
+/* REFRESH EVERY 5 SECONDS */
+
+setInterval(function() {
+
+    loadQueue();
+
+}, 5000);
+
+</script>
+
+</body>
+</html>
