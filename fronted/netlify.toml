@@ -1,0 +1,30 @@
+[build]
+  publish = "."
+
+# Auth Servlet
+[[redirects]]
+  from = "/AuthServlet"
+  to = "https://YOUR-RENDER-BACKEND.onrender.com/AuthServlet"
+  status = 200
+  force = true
+
+# Queue Servlet
+[[redirects]]
+  from = "/QueueServlet"
+  to = "https://YOUR-RENDER-BACKEND.onrender.com/QueueServlet"
+  status = 200
+  force = true
+
+# Queue Tracking Servlet
+[[redirects]]
+  from = "/QueueTrackServlet"
+  to = "https://YOUR-RENDER-BACKEND.onrender.com/QueueTrackServlet"
+  status = 200
+  force = true
+
+# Admin Queue Servlet
+[[redirects]]
+  from = "/AdminQueueServlet"
+  to = "https://YOUR-RENDER-BACKEND.onrender.com/AdminQueueServlet"
+  status = 200
+  force = true
