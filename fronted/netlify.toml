@@ -1,2 +1,11 @@
 [build]
   publish = "."
+
+[functions]
+  directory = "../netlify/functions"
+
+[[redirects]]
+  from = "/AuthServlet"
+  to = "/.netlify/functions/auth"
+  status = 200
+  force = true
