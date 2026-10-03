@@ -1,26 +1,11 @@
 [build]
-  publish = "."
+  publish = "fronted"
+
+[functions]
+  directory = "netlify/functions"
 
 [[redirects]]
   from = "/AuthServlet"
-  to = "https://YOUR-APP.onrender.com/AuthServlet"
-  status = 200
-  force = true
-
-[[redirects]]
-  from = "/QueueServlet"
-  to = "https://YOUR-APP.onrender.com/QueueServlet"
-  status = 200
-  force = true
-
-[[redirects]]
-  from = "/QueueTrackServlet"
-  to = "https://YOUR-APP.onrender.com/QueueTrackServlet"
-  status = 200
-  force = true
-
-[[redirects]]
-  from = "/AdminQueueServlet"
-  to = "https://YOUR-APP.onrender.com/AdminQueueServlet"
+  to = "/.netlify/functions/auth"
   status = 200
   force = true
